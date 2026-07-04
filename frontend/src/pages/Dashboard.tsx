@@ -47,6 +47,23 @@ export default function Dashboard() {
     navigate("/login");
   };
 
+  const exportCsv = async () => {
+    try {
+      const res = await api.get("/api/expenses/export/csv", {
+        responseType: "blob"
+      });
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "expenses.csv");
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (err) {
+      console.error("Export failed", err);
+    }
+  };
+
   return (
     <div style={{ backgroundColor: "#F8FAF8", minHeight: "100vh" }}>
 
@@ -72,6 +89,13 @@ export default function Dashboard() {
             borderRadius: "8px", cursor: "pointer", fontWeight: 500
           }}>
             Analytics
+          </button>
+          <button onClick={() => navigate("/ai-insights")} style={{
+            fontSize: "12px", color: "#6366F1", border: "1px solid #6366F1",
+            backgroundColor: "#ffffff", padding: "6px 12px",
+            borderRadius: "8px", cursor: "pointer", fontWeight: 500
+          }}>
+            AI Insights
           </button>
           <button onClick={logout} style={{
             fontSize: "12px", color: "#EF4444", border: "1px solid #FEE2E2",
@@ -114,16 +138,28 @@ export default function Dashboard() {
             <span style={{ fontWeight: 600, fontSize: "14px", color: "#1A1A2E" }}>
               Recent Transactions
             </span>
-            <button
-              onClick={() => navigate("/add-expense")}
-              style={{
-                backgroundColor: "#00B386", color: "white",
-                border: "none", borderRadius: "8px",
-                padding: "7px 14px", fontSize: "12px",
-                fontWeight: 600, cursor: "pointer"
-              }}>
-              + Add Expense
-            </button>
+            <div style={{ display: "flex", gap: "8px" }}>
+              <button
+                onClick={exportCsv}
+                style={{
+                  backgroundColor: "#ffffff", color: "#6B7280",
+                  border: "1px solid #E5E7EB", borderRadius: "8px",
+                  padding: "7px 14px", fontSize: "12px",
+                  fontWeight: 600, cursor: "pointer"
+                }}>
+                ↓ Export CSV
+              </button>
+              <button
+                onClick={() => navigate("/add-expense")}
+                style={{
+                  backgroundColor: "#00B386", color: "white",
+                  border: "none", borderRadius: "8px",
+                  padding: "7px 14px", fontSize: "12px",
+                  fontWeight: 600, cursor: "pointer"
+                }}>
+                + Add Expense
+              </button>
+            </div>
           </div>
 
           {loading ? (

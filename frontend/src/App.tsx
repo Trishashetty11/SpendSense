@@ -5,6 +5,8 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import Analytics from "./pages/Analytics";
+import AiInsights from "./pages/AiInsights";
+
 
 const PrivateRoute = ({ children }: { children: React.ReactElement }) => {
   const token = localStorage.getItem("token");
@@ -23,6 +25,9 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/analytics" element={
   <PrivateRoute><Analytics /></PrivateRoute>
+} />
+<Route path="/ai-insights" element={
+  <PrivateRoute><AiInsights /></PrivateRoute>
 } />
         <Route path="/dashboard" element={
           <PrivateRoute><Dashboard /></PrivateRoute>

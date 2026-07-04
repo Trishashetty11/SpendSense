@@ -59,4 +59,26 @@ public class ExpenseController {
         return ResponseEntity.ok(
                 expenseService.getExpensesByDateRange(principal.getName(), start, end));
     }
+
+    @GetMapping("/export/csv")
+    public ResponseEntity<String> exportCsv(Principal principal) {
+        List<com.spendsense.backend.dto.ExpenseResponse> expenses =
+                expenseService.getAllExpenses(principal.getName());
+
+        StringBuilder csv = new StringBuilder();
+        csv.append("Title,Amount,Category,Date,Recurring\n");
+
+        for (com.spendsense.backend.dto.ExpenseResponse e : expenses) {
+            csv.append(e.getTitle()).append(",")
+                    .append(e.getAmount()).append(",")
+                    .append(e.getCategoryName()).append(",")
+                    .append(e.getDate()).append(",")
+                    .append(e.isRecurring()).append("\n");
+        }
+
+        return ResponseEntity.ok()
+                .header("Content-Disposition", "attachment; filename=expenses.csv")
+                .header("Content-Type", "text/csv")
+                .body(csv.toString());
+    }
 }
